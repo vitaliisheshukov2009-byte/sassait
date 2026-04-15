@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>МатИгры | 5–8 класс | Проценты (лёгкие) + Красивый визуал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Neue', 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            background: linear-gradient(180deg, #6C63FF 0%, #3F3D9E 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "★ ✿ ◆ ● ▲ ♥ % √";
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 60px;
+            color: rgba(255,255,255,0.08);
+            pointer-events: none;
+            white-space: nowrap;
+            animation: floatBg 20s linear infinite;
+        }
+
+        @keyframes floatBg {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .floating-shape {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app {
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            background: white;
+            border-radius: 80px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            animation: slideDown 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-100px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #FF8A5C, #FF4D6D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1::before {
+            content: "🎮";
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #FFE66D, #FFB347);
+            padding: 10px 25px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #2C2C54;
+            box-shadow: 0 8px 0 #E69500;
+        }
+
+        .reset-btn {
+            background: #E8E8E8;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            background: #FF8A5C;
+            color: white;
+        }
+
+        .mode-toggle {
+            background: white;
+            border-radius: 60px;
+            padding: 5px;
+            display: flex;
+            gap: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mode-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+            background: #E8E8E8;
+            color: #5A4A8C;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #6C63FF, #4A3F8C);
+            color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .mode-btn:hover:not(.active) {
+            transform: scale(1.02);
+            background: #D0D0D0;
+        }
+
+        .game-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 35px;
+        }
+
+        .game-card {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #5A4A8C;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 0 #C8C0E8;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 13px 0 #C8C0E8;
+        }
+
+        .game-card.active {
+            background: linear-gradient(135deg, #FF8A5C, #FF4D6D);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 0 #B83B1E;
+        }
+
+        .game-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 70px;
+            padding: 35px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            animation: zoomIn 0.5s ease;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .training-box {
+            background: linear-gradient(135deg, #E8F4FD, #D1E8F9);
+            border-radius: 50px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 8px solid #FF8A5C;
+        }
+
+        .training-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FF8A5C;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .training-content {
+            color: #2C2C54;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .training-example {
+            background: white;
+            border-radius: 30px;
+            padding: 12px;
+            margin-top: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: #6C63FF;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+        }
+
+        .question-bubble {
+            background: linear-gradient(135deg, #FFEAA7, #FFD32A);
+            border-radius: 80px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            box-shadow: 0 15px 0 #CC8B00;
+            transition: all 0.3s;
+        }
+
+        .question-bubble::before {
+            content: "🐻";
+            position: absolute;
+            left: -30px;
+            top: -30px;
+            font-size: 60px;
+            animation: wave 2s infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .question-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2C2C54;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            letter-spacing: 2px;
+        }
+
+        /* Математические стили */
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+        .math-fraction .numerator {
+            border-bottom: 2px solid #2C2C54;
+            padding: 0 5px;
+        }
+        .math-fraction .denominator {
+            padding: 0 5px;
+        }
+        .math-sup {
+            font-size: 1.2rem;
+            vertical-align: super;
+            line-height: 0;
+        }
+
+        @keyframes correctGlow {
+            0% { transform: scale(1); background: linear-gradient(135deg, #FFEAA7, #FFD32A); }
+            20% { transform: scale(1.08); background: linear-gradient(135deg, #A8E6CF, #55EFC4); box-shadow: 0 0 0 20px rgba(85,239,196,0.5); }
+            100% { transform: scale(1); background: linear-gradient(135deg, #FFEAA7, #FFD32A); }
+        }
+
+        @keyframes wrongExplosion {
+            0% { transform: translateX(0) scale(1); }
+            15% { transform: translateX(-20px) scale(0.98) rotate(-5deg); background: #FF6B6B; }
+            30% { transform: translateX(20px) scale(0.98) rotate(5deg); background: #FF6B6B; }
+            100% { transform: translateX(0) scale(1); background: linear-gradient(135deg, #FFEAA7, #FFD32A); }
+        }
+
+        @keyframes starBurst {
+            0% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+
+        .question-correct {
+            animation: correctGlow 0.8s ease forwards !important;
+        }
+
+        .question-wrong {
+            animation: wrongExplosion 0.6s ease forwards !important;
+        }
+
+        .star-burst {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 1002;
+            animation: starBurst 0.8s ease forwards;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 35px 0;
+        }
+
+        .option-button {
+            background: linear-gradient(135deg, #5D9BEC, #4A7DB5);
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            min-width: 120px;
+            box-shadow: 0 10px 0 #2C5282;
+            font-family: 'Courier New', monospace;
+        }
+
+        .option-button:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 0 #2C5282;
+        }
+
+        .option-button:active:not(:disabled) {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #2C5282;
+        }
+
+        .option-button:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .explanation-box {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-radius: 40px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 8px solid #FF8A5C;
+            animation: slideInUp 0.4s ease;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #E67E22;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .explanation-text {
+            color: #2C2C54;
+            font-size: 1rem;
+        }
+
+        .feedback-message {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 12px;
+            border-radius: 60px;
+            margin: 15px 0;
+            font-weight: bold;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .feedback-correct {
+            background: linear-gradient(135deg, #A8E6CF, #55EFC4);
+            color: #006266;
+        }
+
+        .next-button {
+            background: linear-gradient(135deg, #A29BFE, #6C5CE7);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 60px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            color: white;
+            box-shadow: 0 10px 0 #4A3F8C;
+            transition: 0.1s;
+            font-family: inherit;
+        }
+
+        .next-button:active {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #4A3F8C;
+        }
+
+        .score-pop {
+            position: fixed;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 3px 3px 0 #FF8C00;
+            pointer-events: none;
+            z-index: 1000;
+            animation: floatUp 1s ease forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.5); }
+            50% { opacity: 1; transform: translateY(-40px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            pointer-events: none;
+            z-index: 1001;
+            animation: confettiFall 1.5s ease forwards;
+            border-radius: 2px;
+        }
+
+        @keyframes confettiFall {
+            0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            .question-text { font-size: 1.3rem; }
+            .option-button { padding: 12px 20px; font-size: 1.1rem; min-width: 80px; }
+            .game-card { padding: 8px 16px; font-size: 0.8rem; }
+            h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <h1>Математические игры</h1>
+        <div class="stats">
+            <div class="score-card">⭐ <span id="totalScore">0</span>
+                <button class="reset-btn" id="resetScoreBtn">Сброс</button>
+            </div>
+            <div class="mode-toggle">
+                <button class="mode-btn" data-mode="game">🎮 Игра</button>
+                <button class="mode-btn active" data-mode="train">📚 Тренировка</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-menu" id="gameMenu">
+        <button class="game-card" data-game="equations">📐 Уравнения</button>
+        <button class="game-card" data-game="percents">💰 Проценты</button>
+        <button class="game-card" data-game="geometry">📏 Геометрия</button>
+        <button class="game-card" data-game="multiply">✖️ Таблица ×</button>
+        <button class="game-card" data-game="logic">🧠 Логика</button>
+        <button class="game-card" data-game="speed">⚡ Быстрый счёт</button>
+        <button class="game-card" data-game="compare">🔁 Сравнение</button>
+        <button class="game-card" data-game="roots">🔢 Корни</button>
+    </div>
+
+    <div class="game-container" id="gameArea">
+        <div style="text-align:center; padding:50px;">Загрузка игр...</div>
+    </div>
+
+    <footer>📚 Тренировка: учись без спешки | 🎮 Игра: отвечай за 15 секунд</footer>
+</div>
+
+<script>
+    // ---------- Глобальное состояние ----------
+    let currentGame = 'equations';
+    let currentMode = 'train';
+    let currentQuestion = null;
+    let currentOptions = [];
+    let currentAnswer = null;
+    let currentExplanation = '';
+    let feedbackMsg = '';
+    let feedbackType = '';
+    let waitingForNext = false;
+    let totalScore = 0;
+    let timer = 15;
+    let timerInterval = null;
+    let canAnswer = true;
+    let currentIsTextOption = false;
+
+    // ---------- ФУНКЦИИ ДЛЯ КРАСИВОГО ОТОБРАЖЕНИЯ МАТЕМАТИКИ ----------
+    function formatPower(base, exp) {
+        const supDigits = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+        let expStr = exp.toString();
+        let supStr = '';
+        for(let ch of expStr) {
+            supStr += supDigits[ch] || ch;
+        }
+        return `${base}${supStr}`;
+    }
+
+    function formatFraction(num, den) {
+        return `<span class="math-fraction"><span class="numerator">${num}</span><span class="denominator">${den}</span></span>`;
+    }
+
+    function formatTextWithMath(text) {
+        // Замена a^b на степень
+        text = text.replace(/(\d+)\^(\d+)/g, (match, base, exp) => formatPower(base, exp));
+        // Замена a/b на дробь (только если не часть HTML-тега)
+        text = text.replace(/(\d+)\/(\d+)/g, (match, num, den) => formatFraction(num, den));
+        return text;
+    }
+
+    // ---------- ОБУЧАЮЩИЕ ТЕКСТЫ ----------
+    const trainingContent = {
+        equations: {
+            title: "📐 Что такое уравнение?",
+            content: "Уравнение — это равенство, в котором есть неизвестное число (обычно обозначается буквой x). Чтобы его найти, нужно выполнить обратное действие.",
+            example: "Пример: x + 5 = 12 → x = 12 - 5 = 7",
+            rule: "Правило: Чтобы найти неизвестное слагаемое, нужно из суммы вычесть известное слагаемое."
+        },
+        percents: {
+            title: "💰 Что такое проценты?",
+            content: "Процент — это сотая часть числа. 1% = 1/100 = 0,01. Чтобы найти процент от числа, нужно число умножить на процент и разделить на 100.",
+            example: "Пример: 10% от 100 = 100 × 10 ÷ 100 = 10",
+            rule: "Правило: Чтобы найти, сколько процентов одно число составляет от другого, нужно первое число разделить на второе и умножить на 100%."
+        },
+        geometry: {
+            title: "📏 Как найти площадь?",
+            content: "Площадь прямоугольника равна произведению его длины на ширину. У квадрата все стороны равны, поэтому площадь = сторона × сторона.",
+            example: "Пример: прямоугольник 5 см × 3 см → площадь = 5 × 3 = 15 см²",
+            rule: "Правило: Площадь измеряется в квадратных единицах (см², м²)."
+        },
+        multiply: {
+            title: "✖️ Таблица умножения",
+            content: "Умножение — это сложение одинаковых чисел. Таблицу умножения нужно знать наизусть для быстрого счёта.",
+            example: "Пример: 7 × 8 = 56 (семью восемь — пятьдесят шесть)",
+            rule: "Правило: От перестановки множителей произведение не меняется: a × b = b × a."
+        },
+        logic: {
+            title: "🧠 Логические ряды",
+            content: "В логических рядах нужно найти закономерность: числа могут увеличиваться, уменьшаться или меняться по особому правилу.",
+            example: "Пример: 2, 4, 6, 8, ? → каждое следующее на 2 больше → ответ 10",
+            rule: "Правило: Найди разницу между соседними числами или другую закономерность."
+        },
+        speed: {
+            title: "⚡ Быстрый счёт",
+            content: "Сложение и вычитание в уме — важный навык. Складывай по разрядам: сначала десятки, потом единицы.",
+            example: "Пример: 45 + 28 = (45+20) + 8 = 65 + 8 = 73",
+            rule: "Правило: При вычитании можно округлять: 73 - 28 = 73 - 30 + 2 = 45"
+        },
+        compare: {
+            title: "🔁 Сравнение дробей",
+            content: "Чтобы сравнить дроби, приведи их к общему знаменателю или сравни с половиной.",
+            example: "Пример: 3/4 и 2/3 → 9/12 и 8/12 → 3/4 > 2/3",
+            rule: "Правило: Если знаменатели одинаковые, больше та дробь, у которой числитель больше."
+        },
+        roots: {
+            title: "🔢 Корни и степени",
+            content: "Квадратный корень из числа — это число, которое при умножении на себя даёт исходное. Степень показывает, сколько раз число умножается на себя.",
+            example: "Пример: √25 = 5 (потому что 5×5=25), 2³ = 2×2×2 = 8",
+            rule: "Правило: Корень и степень — обратные операции."
+        }
+    };
+
+    function generateExplanation(game, question, userAnswer, correctAnswer) {
+        switch(game) {
+            case 'equations':
+                return `🔍 Объяснение: Чтобы решить уравнение ${question}, нужно найти x. ${trainingContent.equations.rule} Правильный ответ: ${correctAnswer}.`;
+            case 'percents':
+                return `🔍 Объяснение: ${trainingContent.percents.rule} В этом задании правильный ответ: ${correctAnswer}.`;
+            case 'geometry':
+                return `🔍 Объяснение: ${trainingContent.geometry.rule} Правильный ответ: ${correctAnswer} см².`;
+            case 'multiply':
+                return `🔍 Объяснение: ${trainingContent.multiply.rule} ${question} = ${correctAnswer}. Запомни этот пример из таблицы умножения!`;
+            case 'logic':
+                return `🔍 Объяснение: ${trainingContent.logic.rule} Правильный ответ: ${correctAnswer}.`;
+            case 'speed':
+                return `🔍 Объяснение: ${trainingContent.speed.rule} Правильный ответ: ${correctAnswer}.`;
+            case 'compare':
+                return `🔍 Объяснение: ${trainingContent.compare.rule} ${question} Правильный ответ: ${correctAnswer}.`;
+            case 'roots':
+                return `🔍 Объяснение: ${trainingContent.roots.rule} Правильный ответ: ${correctAnswer}.`;
+            default:
+                return `Правильный ответ: ${correctAnswer}.`;
+        }
+    }
+
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateOptions(correct, delta) {
+        let opts = new Set([correct]);
+        while(opts.size < 4) {
+            let fake = correct + randomInt(-delta, delta);
+            if(fake > 0) opts.add(fake);
+        }
+        return Array.from(opts).sort(() => Math.random() - 0.5);
+    }
+
+    // ---------- УПРОЩЁННАЯ ИГРА ПРО ПРОЦЕНТЫ (ДЛЯ 5-6 КЛАССА) ----------
+    function generatePercents() {
+        let type = randomInt(1, 3);
+        
+        if(type === 1) {
+            // ЛЁГКИЙ: Найти процент от числа (круглые числа)
+            let percentOptions = [10, 20, 25, 50];
+            let percent = percentOptions[randomInt(0, percentOptions.length - 1)];
+            let numberOptions = [100, 200, 300, 400, 500, 1000];
+            let number = numberOptions[randomInt(0, numberOptions.length - 1)];
+            let answer = (percent * number) / 100;
+            
+            return { 
+                question: `${percent}% от ${number} = ?`, 
+                answer: answer, 
+                options: generateOptions(answer, 15) 
+            };
+            
+        } else if(type === 2) {
+            // ЛЁГКИЙ: Сколько процентов составляет число A от числа B
+            let percentPairs = [
+                { a: 10, b: 100, answer: 10 },
+                { a: 25, b: 100, answer: 25 },
+                { a: 50, b: 100, answer: 50 },
+                { a: 30, b: 100, answer: 30 },
+                { a: 40, b: 100, answer: 40 },
+                { a: 60, b: 100, answer: 60 },
+                { a: 70, b: 100, answer: 70 },
+                { a: 80, b: 100, answer: 80 },
+                { a: 90, b: 100, answer: 90 },
+                { a: 20, b: 50, answer: 40 },
+                { a: 30, b: 50, answer: 60 },
+                { a: 10, b: 50, answer: 20 },
+                { a: 25, b: 50, answer: 50 },
+                { a: 15, b: 75, answer: 20 },
+                { a: 30, b: 75, answer: 40 },
+                { a: 45, b: 75, answer: 60 },
+                { a: 60, b: 75, answer: 80 }
+            ];
+            let pair = percentPairs[randomInt(0, percentPairs.length - 1)];
+            let a = pair.a;
+            let b = pair.b;
+            let answer = pair.answer;
+            
+            return { 
+                question: `${a} от ${b} = ?%`, 
+                answer: answer, 
+                options: generateOptions(answer, 10) 
+            };
+            
+        } else {
+            // ЛЁГКИЙ: Найти число по проценту
+            let percentOptions = [10, 20, 25, 50];
+            let percent = percentOptions[randomInt(0, percentOptions.length - 1)];
+            
+            let pairs = [
+                { percent: 10, part: 10, number: 100 },
+                { percent: 10, part: 20, number: 200 },
+                { percent: 10, part: 30, number: 300 },
+                { percent: 10, part: 50, number: 500 },
+                { percent: 20, part: 20, number: 100 },
+                { percent: 20, part: 40, number: 200 },
+                { percent: 20, part: 60, number: 300 },
+                { percent: 20, part: 100, number: 500 },
+                { percent: 25, part: 25, number: 100 },
+                { percent: 25, part: 50, number: 200 },
+                { percent: 25, part: 75, number: 300 },
+                { percent: 25, part: 125, number: 500 },
+                { percent: 50, part: 50, number: 100 },
+                { percent: 50, part: 100, number: 200 },
+                { percent: 50, part: 150, number: 300 },
+                { percent: 50, part: 250, number: 500 }
+            ];
+            
+            let pair = pairs[randomInt(0, pairs.length - 1)];
+            let part = pair.part;
+            let number = pair.number;
+            let answer = number;
+            
+            return { 
+                question: `${percent}% числа = ${part}. Найди число.`, 
+                answer: answer, 
+                options: generateOptions(answer, 30) 
+            };
+        }
+    }
+
+    // ---------- ОСТАЛЬНЫЕ ГЕНЕРАТОРЫ ----------
+    function generateEquation() {
+        let type = randomInt(1, 3);
+        let a, b, answer, questionText;
+        if(type === 1) {
+            a = randomInt(3, 20);
+            b = randomInt(a+2, a+30);
+            answer = b - a;
+            questionText = `x + ${a} = ${b}`;
+        } else if(type === 2) {
+            a = randomInt(2, 9);
+            answer = randomInt(2, 12);
+            b = a * answer;
+            questionText = `${a} · x = ${b}`;
+        } else {
+            a = randomInt(3, 15);
+            b = randomInt(5, 25);
+            answer = a + b;
+            questionText = `x - ${a} = ${b}`;
+        }
+        return { question: questionText, answer: answer, options: generateOptions(answer, 6) };
+    }
+
+    function generateGeometry() {
+        let shape = randomInt(1,2);
+        if(shape === 1) {
+            let a = randomInt(3, 15);
+            let b = randomInt(4, 18);
+            return { question: `Площадь прямоугольника ${a}×${b} см² = ?`, answer: a*b, options: generateOptions(a*b, 12) };
+        } else {
+            let a = randomInt(4, 14);
+            return { question: `Площадь квадрата со стороной ${a} см = ?`, answer: a*a, options: generateOptions(a*a, 15) };
+        }
+    }
+
+    function generateMultiply() {
+        let a = randomInt(2, 9);
+        let b = randomInt(2, 9);
+        return { question: `${a} × ${b} = ?`, answer: a*b, options: generateOptions(a*b, 5) };
+    }
+
+    function generateLogic() {
+        let patterns = [
+            { seq: [2,4,6,8], next: 10 },
+            { seq: [3,6,9,12], next: 15 },
+            { seq: [5,10,15,20], next: 25 },
+            { seq: [1,4,9,16], next: 25 },
+            { seq: [10,8,6,4], next: 2 },
+            { seq: [1,3,6,10], next: 15 }
+        ];
+        let p = patterns[randomInt(0, patterns.length-1)];
+        return { question: `Найди следующее: ${p.seq.join(", ")}, ?`, answer: p.next, options: generateOptions(p.next, 5) };
+    }
+
+    function generateSpeed() {
+        let a = randomInt(15, 99);
+        let b = randomInt(5, 45);
+        let op = randomInt(1,2);
+        if(op === 1) {
+            return { question: `${a} + ${b} = ?`, answer: a+b, options: generateOptions(a+b, 7) };
+        } else {
+            if(a < b) [a,b] = [b,a];
+            return { question: `${a} - ${b} = ?`, answer: a-b, options: generateOptions(a-b, 7) };
+        }
+    }
+
+    function generateCompare() {
+        let a = randomInt(1, 8);
+        let b = randomInt(2, 9);
+        let c = randomInt(1, 8);
+        let d = randomInt(2, 9);
+        if(a/b === c/d) c = c+1;
+        let val1 = a/b;
+        let val2 = c/d;
+        let answerSymbol = val1 > val2 ? ">" : (val1 < val2 ? "<" : "=");
+        let q1 = formatFraction(a, b);
+        let q2 = formatFraction(c, d);
+        return { question: `${q1} ? ${q2}`, answer: answerSymbol, options: [">", "<", "="], isTextOption: true, isHtml: true };
+    }
+
+    function generateRoots() {
+        let type = randomInt(1,2);
+        if(type === 1) {
+            let num = randomInt(4, 121);
+            let root = Math.sqrt(num);
+            if(Number.isInteger(root) && root <= 15) {
+                return { question: `√${num} = ?`, answer: root, options: generateOptions(root, 4) };
+            } else {
+                return generateRoots();
+            }
+        } else {
+            let base = randomInt(2, 5);
+            let exp = randomInt(2, 3);
+            let power = Math.pow(base, exp);
+            let q = formatPower(base, exp);
+            return { question: `${q} = ?`, answer: power, options: generateOptions(power, 6), isHtml: true };
+        }
+    }
+
+    function getNewQuestion() {
+        switch(currentGame) {
+            case 'equations': return generateEquation();
+            case 'percents': return generatePercents();
+            case 'geometry': return generateGeometry();
+            case 'multiply': return generateMultiply();
+            case 'logic': return generateLogic();
+            case 'speed': return generateSpeed();
+            case 'compare': return generateCompare();
+            case 'roots': return generateRoots();
+            default: return generateEquation();
+        }
+    }
+
+    // ---------- ЗВУКИ ----------
+    function playSound(type) {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if(type === 'correct') {
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.2;
+                oscillator.type = 'sine';
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.4);
+                oscillator.stop(audioContext.currentTime + 0.4);
+            } else if(type === 'wrong') {
+                oscillator.frequency.value = 440;
+                gainNode.gain.value = 0.2;
+                oscillator.type = 'sawtooth';
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+            setTimeout(() => audioContext.close(), 800);
+        } catch(e) {}
+    }
+
+    // ---------- ВСПЛЫВАЮЩИЕ ЭЛЕМЕНТЫ ----------
+    function showScorePopup(x, y, points) {
+        const popup = document.createElement('div');
+        popup.className = 'score-pop';
+        popup.textContent = `+${points}! 🎉`;
+        popup.style.left = x + 'px';
+        popup.style.top = y + 'px';
+        document.body.appendChild(popup);
+        setTimeout(() => popup.remove(), 1000);
+    }
+
+    function createStarBurst(x, y) {
+        for(let i = 0; i < 8; i++) {
+            const star = document.createElement('div');
+            star.className = 'star-burst';
+            star.textContent = ['⭐', '✨', '🌟', '💫'][Math.floor(Math.random() * 4)];
+            star.style.left = x + (Math.random() - 0.5) * 100 + 'px';
+            star.style.top = y + (Math.random() - 0.5) * 100 + 'px';
+            star.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 800);
+        }
+    }
+
+    function createConfetti() {
+        const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
+        for(let i = 0; i < 80; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = Math.random() * 10 + 5 + 'px';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 1500);
+        }
+    }
+
+    // ---------- ТАЙМЕР ----------
+    function startTimer() {
+        if(currentMode === 'train') return;
+        stopTimer();
+        timer = 15;
+        updateTimerDisplay();
+        canAnswer = true;
+        
+        const timerCard = document.getElementById('timerCard');
+        if(timerCard) {
+            timerCard.style.background = "linear-gradient(135deg, #FF6B6B, #EE5A24)";
+        }
+        
+        timerInterval = setInterval(() => {
+            if(!waitingForNext && canAnswer) {
+                timer--;
+                updateTimerDisplay();
+                
+                if(timer <= 5 && timerCard) {
+                    timerCard.style.background = "linear-gradient(135deg, #FF0000, #CC0000)";
+                }
+                
+                if(timer <= 0) {
+                    stopTimer();
+                    playSound('wrong');
+                    canAnswer = false;
+                    let explanation = generateExplanation(currentGame, currentQuestion, null, currentAnswer);
+                    feedbackMsg = `⏰ Время вышло! Правильный ответ: ${currentAnswer}`;
+                    feedbackType = 'wrong';
+                    waitingForNext = true;
+                    currentExplanation = explanation;
+                    disableOptions();
+                    renderGame();
+                }
+            }
+        }, 1000);
+    }
+    
+    function stopTimer() {
+        if(timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+    
+    function updateTimerDisplay() {
+        const timerSpan = document.getElementById('timer');
+        if(timerSpan) timerSpan.innerText = timer;
+    }
+    
+    function disableOptions() {
+        const btns = document.querySelectorAll('.option-button');
+        btns.forEach(btn => btn.disabled = true);
+    }
+
+    // ---------- ПРОВЕРКА ОТВЕТА ----------
+    function checkAnswer(selected, event) {
+        if(!canAnswer || waitingForNext) return;
+        
+        let isCorrect = (selected == currentAnswer);
+        stopTimer();
+        
+        const questionDiv = document.querySelector('.question-bubble');
+        let x = event ? event.clientX : window.innerWidth / 2;
+        let y = event ? event.clientY : window.innerHeight / 2;
+        
+        if(isCorrect) {
+            playSound('correct');
+            totalScore += 10;
+            saveScore();
+            showScorePopup(x, y, 10);
+            createConfetti();
+            createStarBurst(x, y);
+            feedbackMsg = `✅ Отлично! +10 очков. Ответ: ${currentAnswer}`;
+            feedbackType = 'correct';
+            currentExplanation = '';
+            if(questionDiv) {
+                questionDiv.classList.remove('question-wrong');
+                questionDiv.classList.add('question-correct');
+                setTimeout(() => questionDiv.classList.remove('question-correct'), 800);
+            }
+        } else {
+            playSound('wrong');
+            let explanation = generateExplanation(currentGame, currentQuestion, selected, currentAnswer);
+            feedbackMsg = `❌ Неверно! Правильный ответ: ${currentAnswer}`;
+            feedbackType = 'wrong';
+            currentExplanation = explanation;
+            if(questionDiv) {
+                questionDiv.classList.remove('question-correct');
+                questionDiv.classList.add('question-wrong');
+                setTimeout(() => questionDiv.classList.remove('question-wrong'), 600);
+            }
+        }
+        waitingForNext = true;
+        canAnswer = false;
+        disableOptions();
+        renderGame();
+    }
+
+    // ---------- ОТРИСОВКА ----------
+    function renderGame() {
+        const gameArea = document.getElementById('gameArea');
+        if(!gameArea) return;
+
+        if(!currentQuestion || waitingForNext === true) {
+            let qData = getNewQuestion();
+            currentQuestion = qData.question;
+            currentAnswer = qData.answer;
+            currentOptions = qData.options;
+            currentIsTextOption = qData.isTextOption || false;
+            let currentIsHtml = qData.isHtml || false;
+            currentExplanation = '';
+            feedbackMsg = '';
+            feedbackType = '';
+            waitingForNext = false;
+            canAnswer = true;
+            
+            if(currentMode === 'game') {
+                startTimer();
+            } else {
+                const timerCard = document.getElementById('timerCard');
+                if(timerCard) timerCard.style.background = "linear-gradient(135deg, #999, #777)";
+            }
+        }
+
+        let trainingHtml = '';
+        if(currentMode === 'train') {
+            const training = trainingContent[currentGame];
+            let formattedExample = formatTextWithMath(training.example);
+            trainingHtml = `
+                <div class="training-box">
+                    <div class="training-title">📖 ${training.title}</div>
+                    <div class="training-content">${training.content}</div>
+                    <div class="training-example">💡 ${formattedExample}</div>
+                </div>
+            `;
+        }
+
+        let optionsHtml = '';
+        for(let opt of currentOptions) {
+            let displayVal = opt;
+            optionsHtml += `<button class="option-button" data-value="${opt}">${displayVal}</button>`;
+        }
+
+        let feedbackClass = feedbackType === 'correct' ? 'feedback-correct' : '';
+        let feedbackHtml = feedbackMsg ? `<div class="feedback-message ${feedbackClass}">${feedbackMsg}</div>` : '';
+        
+        let explanationHtml = '';
+        if(currentExplanation && currentMode === 'train') {
+            explanationHtml = `
+                <div class="explanation-box">
+                    <div class="explanation-title">📖 Объяснение:</div>
+                    <div class="explanation-text">${currentExplanation}</div>
+                </div>
+            `;
+        }
+
+        let formattedQuestion = currentQuestion;
+        if(!currentQuestion.includes('<span') && !currentQuestion.includes('math-fraction')) {
+            formattedQuestion = formatTextWithMath(currentQuestion);
+        }
+
+        let html = `
+            ${trainingHtml}
+            <div class="question-bubble">
+                <div class="question-text">❓ ${formattedQuestion}</div>
+            </div>
+            <div class="options-grid" id="optionsContainer">
+                ${optionsHtml}
+            </div>
+            ${explanationHtml}
+            ${feedbackHtml}
+            ${waitingForNext ? `<button class="next-button" id="nextQuestionBtn">➡️ Следующий вопрос</button>` : ''}
+        `;
+        gameArea.innerHTML = html;
+
+        if(!waitingForNext && canAnswer) {
+            const btns = document.querySelectorAll('.option-button');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if(waitingForNext || !canAnswer) return;
+                    let selected = btn.getAttribute('data-value');
+                    if(!isNaN(selected) && !currentIsTextOption) selected = Number(selected);
+                    checkAnswer(selected, e);
+                });
+            });
+        }
+
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        if(nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                stopTimer();
+                currentQuestion = null;
+                waitingForNext = false;
+                currentExplanation = '';
+                feedbackMsg = '';
+                feedbackType = '';
+                renderGame();
+            });
+        }
+    }
+
+    function saveScore() {
+        localStorage.setItem('mathGamesScoreFinal', totalScore);
+        document.getElementById('totalScore').innerText = totalScore;
+    }
+
+    function loadScore() {
+        let saved = localStorage.getItem('mathGamesScoreFinal');
+        if(saved !== null) totalScore = parseInt(saved);
+        else totalScore = 0;
+        document.getElementById('totalScore').innerText = totalScore;
+    }
+
+    function resetScore() {
+        if(confirm('Сбросить все очки?')) {
+            totalScore = 0;
+            saveScore();
+            renderGame();
+        }
+    }
+
+    function switchGame(gameId) {
+        currentGame = gameId;
+        currentQuestion = null;
+        waitingForNext = false;
+        currentExplanation = '';
+        feedbackMsg = '';
+        feedbackType = '';
+        canAnswer = true;
+        stopTimer();
+        renderGame();
+        
+        document.querySelectorAll('.game-card').forEach(btn => {
+            if(btn.getAttribute('data-game') === gameId) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    function switchMode(mode) {
+        currentMode = mode;
+        currentQuestion = null;
+        waitingForNext = false;
+        currentExplanation = '';
+        feedbackMsg = '';
+        feedbackType = '';
+        canAnswer = true;
+        stopTimer();
+        renderGame();
+        
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            if(btn.getAttribute('data-mode') === mode) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    function createFloatingShapes() {
+        for(let i = 0; i < 15; i++) {
+            const shape = document.createElement('div');
+            shape.className = 'floating-shape';
+            shape.style.width = Math.random() * 80 + 20 + 'px';
+            shape.style.height = shape.style.width;
+            shape.style.left = Math.random() * 100 + '%';
+            shape.style.top = Math.random() * 100 + '%';
+            shape.style.animation = `floatBg ${Math.random() * 20 + 10}s linear infinite`;
+            shape.style.opacity = Math.random() * 0.3;
+            document.body.appendChild(shape);
+        }
+    }
+
+    function init() {
+        loadScore();
+        createFloatingShapes();
+        
+        const menuBtns = document.querySelectorAll('.game-card');
+        menuBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchGame(btn.getAttribute('data-game')));
+        });
+        
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchMode(btn.getAttribute('data-mode')));
+        });
+        
+        document.getElementById('resetScoreBtn').addEventListener('click', () => resetScore());
+        
+        const statsDiv = document.querySelector('.stats');
+        const timerCard = document.createElement('div');
+        timerCard.className = 'score-card';
+        timerCard.id = 'timerCard';
+        timerCard.innerHTML = '⏱️ <span id="timer">15</span> сек';
+        statsDiv.appendChild(timerCard);
+        
+        switchGame('equations');
+    }
+
+    init();
+</script>
+</body>
+</html>
